@@ -67,6 +67,50 @@ public class ClientsService : IClientsService
         await _individualsRepository.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task UpdateIndividualAsync(int idClient, UpdateIndividualDto individualDto, CancellationToken cancellationToken)
+    {
+        var client = await GetIndividualAsync(idClient, cancellationToken);
+        
+        if (client.PhoneNumber != individualDto.PhoneNumber)
+        {
+            await ValidatePhoneNumber(individualDto.PhoneNumber, cancellationToken);
+            client.PhoneNumber = individualDto.PhoneNumber;
+        }
+        
+        if (client.Email != individualDto.Email)
+        {
+            await ValidateEmail(individualDto.Email, cancellationToken);
+            client.Email = individualDto.Email;
+        }
+        
+        client.FirstName = individualDto.FirstName;
+        client.LastName = individualDto.LastName;
+        client.Address = individualDto.Address;
+        
+        await _individualsRepository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateCompanyAsync(int idClient, UpdateCompanyDto companyDto, CancellationToken cancellationToken)
+    {
+        var client = await GetCompanyAsync(idClient, cancellationToken);
+        
+        if (client.PhoneNumber != companyDto.PhoneNumber)
+        {
+            await ValidatePhoneNumber(companyDto.PhoneNumber, cancellationToken);
+            client.PhoneNumber = companyDto.PhoneNumber;
+        }
+        
+        if (client.Email != companyDto.Email)
+        {
+            await ValidateEmail(companyDto.Email, cancellationToken);
+            client.Email = companyDto.Email;
+        }
+        client.Address = companyDto.Address;
+        client.CompanyName = companyDto.CompanyName;
+        
+        await _companiesRepository.SaveChangesAsync(cancellationToken);
+    }
+
     private async Task<Individual?> GetIndividualAsync(int idClient, CancellationToken cancellationToken)
     {
         var client = await _individualsRepository.GetIndividualAsync(idClient, cancellationToken);
@@ -75,8 +119,26 @@ public class ClientsService : IClientsService
             throw new ValidationException("Client not found");
         }
 
+        if (client.IsDeleted)
+        {
+            throw new ValidationException("Client was deleted before");  
+        }
+
         return client;
     }
+    
+    private async Task<Company?> GetCompanyAsync(int idClient, CancellationToken cancellationToken)
+    {
+        var client = await _companiesRepository.GetCompanyAsync(idClient, cancellationToken);
+        if (client == null)
+        {
+            throw new ValidationException("Client not found");
+        }
+
+        return client;
+    }
+    
+    
 
     private async Task ValidateKrs(string requestKrs, CancellationToken cancellationToken)
     {
@@ -95,7 +157,7 @@ public class ClientsService : IClientsService
             throw new ValidationException("Client with this phone number already exists");
         }
         var client1 = await _individualsRepository.ClientWithNumberExists(phoneNumber, cancellationToken);
-        if (client1 != null)
+        if (client1 != null && client1.IsDeleted == false)
         {
             throw new ValidationException("Client with this phone number already exists");
         }
@@ -106,7 +168,10 @@ public class ClientsService : IClientsService
         var client = await _individualsRepository.ClientWithPeselExists(pesel, cancellationToken);
         if (client != null)
         {
-            throw new ValidationException("Client with this PESEL already exists");
+            if (!client.IsDeleted)
+            {
+                throw new ValidationException("Client with this PESEL already exists");
+            }
         }
     }
 
@@ -118,7 +183,7 @@ public class ClientsService : IClientsService
             throw new ValidationException("Client with this email number already exists");
         }
         var client1 = await _individualsRepository.ClientWithEmailExists(email, cancellationToken);
-        if (client1 != null)
+        if (client1 != null && client1.IsDeleted == false)
         {
             throw new ValidationException("Client with this email number already exists");
         }

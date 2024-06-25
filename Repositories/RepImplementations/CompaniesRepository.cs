@@ -38,4 +38,9 @@ public class CompaniesRepository : ICompaniesRepository
     {
         await _dbContext.Companies.AddAsync(newCompany, cancellationToken);
     }
+
+    public Task<Company?> GetCompanyAsync(int idClient, CancellationToken cancellationToken)
+    {
+        return _dbContext.Companies.FirstOrDefaultAsync(x => x.IdCompany == idClient, cancellationToken);
+    }
 }

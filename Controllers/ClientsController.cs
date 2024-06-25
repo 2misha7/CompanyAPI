@@ -66,6 +66,36 @@ public class ClientsController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    //update Individual client
+    [HttpPut("/individuals/{idClient}")]
+    public async Task<IActionResult> UpdateIndividual(int idClient, [FromBody] UpdateIndividualDto individualDto ,CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _clientsService.UpdateIndividualAsync(idClient, individualDto, cancellationToken);
+            return Ok("Individual client has been updated");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        } 
+    }
+    
+    //update Individual client
+    [HttpPut("/companies/{idClient}")]
+    public async Task<IActionResult> UpdateCompany(int idClient, [FromBody] UpdateCompanyDto companyDto ,CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _clientsService.UpdateCompanyAsync(idClient, companyDto, cancellationToken);
+            return Ok("Company client has been updated");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        } 
+    }
     
     
 }
