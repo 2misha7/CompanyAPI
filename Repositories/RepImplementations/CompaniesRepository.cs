@@ -14,19 +14,19 @@ public class CompaniesRepository : ICompaniesRepository
         _dbContext = dbContext;
     }
 
-    public Task<Company?> ClientWithNumberExists(string requestPhoneNumber, CancellationToken cancellationToken)
+    public  async Task<Company?> ClientWithNumberExists(string requestPhoneNumber, CancellationToken cancellationToken)
     {
-        return _dbContext.Companies.FirstOrDefaultAsync(x => x.PhoneNumber == requestPhoneNumber, cancellationToken);
+        return await _dbContext.Companies.FirstOrDefaultAsync(x => x.PhoneNumber == requestPhoneNumber, cancellationToken);
     }
 
-    public Task<Company?> ClientWithEmailExists(string requestEmail, CancellationToken cancellationToken)
+    public async Task<Company?> ClientWithEmailExists(string requestEmail, CancellationToken cancellationToken)
     {
-        return _dbContext.Companies.FirstOrDefaultAsync(x => x.Email == requestEmail, cancellationToken);
+        return await _dbContext.Companies.FirstOrDefaultAsync(x => x.Email == requestEmail, cancellationToken);
     }
 
-    public Task<Company?> ClientWithKrs(string requestKrs, CancellationToken cancellationToken)
+    public async Task<Company?> ClientWithKrs(string requestKrs, CancellationToken cancellationToken)
     {
-        return _dbContext.Companies.FirstOrDefaultAsync(x => x.KRS == requestKrs, cancellationToken);
+        return await _dbContext.Companies.FirstOrDefaultAsync(x => x.KRS == requestKrs, cancellationToken);
     }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
@@ -39,8 +39,8 @@ public class CompaniesRepository : ICompaniesRepository
         await _dbContext.Companies.AddAsync(newCompany, cancellationToken);
     }
 
-    public Task<Company?> GetCompanyAsync(int idClient, CancellationToken cancellationToken)
+    public async Task<Company?> GetCompanyAsync(int idClient, CancellationToken cancellationToken)
     {
-        return _dbContext.Companies.FirstOrDefaultAsync(x => x.IdCompany == idClient, cancellationToken);
+        return await _dbContext.Companies.FirstOrDefaultAsync(x => x.IdCompany == idClient, cancellationToken);
     }
 }

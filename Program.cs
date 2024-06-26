@@ -15,6 +15,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IClientsService, ClientsService>();
 builder.Services.AddScoped<ICompaniesRepository, CompaniesRepository>();
 builder.Services.AddScoped<IIndividualsRepository, IndividualRepository>();
+builder.Services.AddScoped<IContractsService, ContractsService>();
+builder.Services.AddScoped<IContractsRepository, ContractsRepository>();
+builder.Services.AddScoped<IVersionsRepository, VersionsRepository>();
+builder.Services.AddScoped<IDiscountsRepository, DiscountsRepository>();
 builder.Services.AddDbContext<MyContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));

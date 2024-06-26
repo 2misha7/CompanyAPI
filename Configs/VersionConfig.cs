@@ -14,5 +14,6 @@ public class VersionConfig : IEntityTypeConfiguration<Entities.Version>
             .HasForeignKey(x => x.IdSoftware)
             .OnDelete(DeleteBehavior.NoAction);
         builder.Property(x => x.Description).IsRequired().HasMaxLength(250);
+        builder.Property(x => x.Price).IsRequired();
     }
 }
