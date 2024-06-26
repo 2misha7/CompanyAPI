@@ -25,4 +25,10 @@ public class VersionsRepository : IVersionsRepository
         var version = await _dbCcntext.Versions.FirstOrDefaultAsync(x => x.IdVersion == versionId);
         return version.Price;
     }
+
+    public async Task<string?> FindVersionName(int versionId, CancellationToken cancellationToken)
+    {
+        var version = await _dbCcntext.Versions.FirstOrDefaultAsync(x => x.IdVersion == versionId, cancellationToken);
+        return version?.Name;
+    }
 }

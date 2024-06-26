@@ -6,6 +6,7 @@ public class Version
     public int IdSoftware { get; set; }
     public DateOnly Date { get; set; }
     public string Description { get; set; }
+    public string? Name { get; set; }
     public double Price { get; set; }
     public virtual Software Software { get; set; }
     public virtual ICollection<Contract> Contracts { get; set; }

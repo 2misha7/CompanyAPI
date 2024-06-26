@@ -9,6 +9,7 @@ public class Contract
     public DateTime DateTo { get; set; }
     public int IdSoftwareVersion{ get; set; }
     public double FullPrice { get; set; }
+    public bool Signed { get; set; }
     public int ExtendedSupportPeriod { get; set; }
     public double AmountPaid { get; set; }
     public virtual Version Version { get; set; }

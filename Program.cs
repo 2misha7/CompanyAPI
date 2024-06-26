@@ -19,6 +19,7 @@ builder.Services.AddScoped<IContractsService, ContractsService>();
 builder.Services.AddScoped<IContractsRepository, ContractsRepository>();
 builder.Services.AddScoped<IVersionsRepository, VersionsRepository>();
 builder.Services.AddScoped<IDiscountsRepository, DiscountsRepository>();
+builder.Services.AddScoped<ISoftwareRepository, SoftwareRepository>();
 builder.Services.AddDbContext<MyContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));

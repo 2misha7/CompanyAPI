@@ -37,4 +37,15 @@ public class ContractsRepository : IContractsRepository
         var contract = await _dbContext.Contracts.FirstOrDefaultAsync(x => x.IdCompany == clientId);
         return contract != null;
     }
+
+    public async Task<Contract> AddContractAsync(Contract newContract, CancellationToken cancellationToken)
+    {
+        await _dbContext.Contracts.AddAsync(newContract, cancellationToken);
+        return newContract;
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

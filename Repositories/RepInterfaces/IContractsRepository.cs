@@ -8,4 +8,6 @@ public interface IContractsRepository
     Task<Contract?> GetContractByVersionCompany(int clientId, int versionId, CancellationToken cancellationToken);
     Task <bool> IndividualHasContracts(int clientId);
     Task<bool> CompanyHasContracts(int clientId);
+    Task<Contract> AddContractAsync(Contract newContract, CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }
