@@ -25,13 +25,15 @@ public class ContractsService : IContractsService
 
     public async Task<ContractDto> CreateContractAsync(CreateContractDto createContractDto, CancellationToken cancellationToken)
     {
+        await ValidateVersionOfSoftware(createContractDto.SoftwareID, createContractDto.VersionID, cancellationToken);
+        await ValiateSoftware(createContractDto.SoftwareID, cancellationToken);
         await ValiateTimeRange(createContractDto.TimeRange);
         await ValiateExtraSupportPeriod(createContractDto.YearsOfAdditionalSupport);
         var clientType = await ClientHasSimilarContract(createContractDto.YearsOfAdditionalSupport, createContractDto.ClientID, createContractDto.IsIndividual, createContractDto.IsCompany, createContractDto.VersionID, cancellationToken);
-        await ValidateVersionOfSoftware(createContractDto.SoftwareID, createContractDto.VersionID, cancellationToken);
+        
 
         
-        var clientHasContracts = false;
+        bool clientHasContracts;
         int IdIndividual = 0;
         int IdCompany = 0;
         if (clientType == "Individual")
@@ -45,6 +47,8 @@ public class ContractsService : IContractsService
             clientHasContracts = await _contractsRepository.CompanyHasContracts(createContractDto.ClientID);
         }
 
+        Console.WriteLine(IdIndividual);
+        Console.WriteLine(IdCompany);
         var price = await _versionsRepository.GetPriceForVersion(createContractDto.VersionID, cancellationToken);
         var discountPercentage =  await _discountsRepository.FindHighestDiscount(cancellationToken);
         if (clientHasContracts)
@@ -52,19 +56,28 @@ public class ContractsService : IContractsService
             discountPercentage += 5;
         }
 
+        price += createContractDto.YearsOfAdditionalSupport * 1000;
         price -= price * discountPercentage / 100;
         var newContract = new Contract
         {
             IdSoftwareVersion = createContractDto.VersionID,
             ExtendedSupportPeriod = createContractDto.YearsOfAdditionalSupport,
             AmountPaid = 0,
-            IdIndividual = IdIndividual,
-            IdCompany = IdCompany,
             DateFrom = DateTime.Now,
             DateTo = DateTime.Now.AddDays(createContractDto.TimeRange),
             FullPrice = price,
-            Signed = false
+            Signed = false,
+            Payments = new List<Payment>()
         };
+        
+        if (clientType == "Individual")
+        {
+            newContract.IdIndividual = IdIndividual;
+        }
+        else
+        {
+            newContract.IdCompany = IdCompany;
+        }
         var contract = await _contractsRepository.AddContractAsync(newContract, cancellationToken);
         
         await _contractsRepository.SaveChangesAsync(cancellationToken);
@@ -87,7 +100,16 @@ public class ContractsService : IContractsService
         };
         return finalContract;
     }
-    
+
+    private async Task ValiateSoftware(int softwareId, CancellationToken cancellationToken)
+    {
+        var software = await _softwareRepository.GetSoftware(softwareId, cancellationToken);
+        if (software == null)
+        {
+            throw new ValidationException("This software does not exist");
+        }
+    }
+
     private async Task ValidateVersionOfSoftware(int softwareId, int versionId, CancellationToken cancellationToken)
     {
         var version =  await _versionsRepository.VersionExists(softwareId, versionId, cancellationToken);
@@ -102,25 +124,23 @@ public class ContractsService : IContractsService
         if (isIndividual)
         {
             var contract = await _contractsRepository.GetContractByVersionIndividual(clientId, versionId, cancellationToken);
-            if (contract != null && contract.DateFrom.AddYears(1 + yearsOfSupport) < DateTime.Now)
+            if (contract != null && contract.DateFrom.AddYears(1 + yearsOfSupport) > DateTime.Now)
             {
                 throw new ValidationException("This individual client already has an active contract for this product");
             }
 
             return "Individual";
-        }else if (isCompany)
+        }
+        if (isCompany)
         {
             var contract = await _contractsRepository.GetContractByVersionCompany(clientId, versionId, cancellationToken);
-            if (contract != null && contract.DateFrom.AddYears(1 + yearsOfSupport) < DateTime.Now)
+            if (contract != null && contract.DateFrom.AddYears(1 + yearsOfSupport) > DateTime.Now)
             {
                 throw new ValidationException("This company already has an active contract for this product");
             }
             return "Company";
         }
-        else
-        {
-            throw new ValidationException("Client type must be specified");
-        }
+        throw new ValidationException("Client type must be specified");
     }
 
     private async Task ValiateExtraSupportPeriod(int yearsOfAdditionalSupport)

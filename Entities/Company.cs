@@ -16,5 +16,5 @@ public class Company
     public string PhoneNumber { get; set; }
 
     public string KRS { get; set; }
-    public virtual ICollection<Contract> Contracts { get; set; }
+    public virtual ICollection<Contract> Contracts { get; set; } = new HashSet<Contract>();
 }

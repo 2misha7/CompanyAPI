@@ -11,5 +11,5 @@ public class Discount
     public DateTime DateFrom { get; set; }
 
     public DateTime DateTo { get; set; }
-    public virtual ICollection<ContractDiscount> ContractDiscounts { get; set; }
+    
 }

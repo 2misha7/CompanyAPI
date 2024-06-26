@@ -16,5 +16,5 @@ public class Individual
 
     public string PESEL { get; set; }
     public bool IsDeleted { get; set; }
-    public virtual ICollection<Contract> Contracts { get; set; }
+    public virtual ICollection<Contract> Contracts { get; set; } = new HashSet<Contract>();
 }

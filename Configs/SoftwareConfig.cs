@@ -8,7 +8,7 @@ public class SoftwareConfig : IEntityTypeConfiguration<Software>
 {
     public void Configure(EntityTypeBuilder<Software> builder)
     {
-        builder.HasKey(x => x.IdSoftwareCategory);
+        builder.HasKey(x => x.IdSoftware);
         builder
             .HasOne(x => x.SoftwareCategory)
             .WithMany(x => x.Softwares)

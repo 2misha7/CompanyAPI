@@ -16,8 +16,9 @@ public class ContractsController : ControllerBase
     {
         _contractsService = contractsService;
     }
+
     
-    
+   [HttpPost()]
     public async Task<IActionResult> CreateContract([FromBody] CreateContractDto createContractDto, CancellationToken cancellationToken)
     {
         try
