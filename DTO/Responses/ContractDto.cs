@@ -11,6 +11,6 @@ public class ContractDto
     public string SoftwareName { get; set; }
     public double FullPrice { get; set; }
     public double AmountPaid { get; set; }
-    public bool Signed { get; set; }
+    public string Status { get; set; }
     public int ExtendedSupportPeriod { get; set; }
 }

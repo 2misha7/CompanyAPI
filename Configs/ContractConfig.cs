@@ -12,7 +12,7 @@ public class ContractConfig : IEntityTypeConfiguration<Contract>
         builder.Property(x => x.DateFrom).IsRequired();
         builder.Property(x => x.DateTo).IsRequired();
         builder.Property(x => x.ExtendedSupportPeriod).IsRequired();
-        builder.Property(x=>x.Signed).IsRequired();
+        builder.Property(x=>x.Status).IsRequired();
         builder
             .HasOne(x => x.Company)
             .WithMany(x => x.Contracts)

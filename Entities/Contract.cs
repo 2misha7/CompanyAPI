@@ -2,6 +2,14 @@
 
 namespace Project.Entities;
 
+
+public static class ContractStatuses
+{
+    public const string Created = "Created";
+    public const string Signed = "Signed";
+    public const string Cancelled = "Cancelled";
+}
+
 public class Contract
 { 
     public int IdContract { get; set; }
@@ -11,7 +19,7 @@ public class Contract
     public DateTime DateTo { get; set; }
     public int IdSoftwareVersion{ get; set; }
     public double FullPrice { get; set; }
-    public bool Signed { get; set; }
+    public string Status { get; set; }
     public int ExtendedSupportPeriod { get; set; }
     public double AmountPaid { get; set; }
     public virtual Version Version { get; set; }

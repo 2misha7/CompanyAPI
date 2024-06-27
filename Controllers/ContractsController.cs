@@ -11,10 +11,12 @@ namespace ApbdProject.Controllers;
 public class ContractsController : ControllerBase
 {
     private readonly IContractsService _contractsService;
+    private readonly IPaymentsService _paymentsService;
 
-    public ContractsController(IContractsService contractsService)
+    public ContractsController(IContractsService contractsService, IPaymentsService paymentsService)
     {
         _contractsService = contractsService;
+        _paymentsService = paymentsService;
     }
 
     
@@ -31,4 +33,19 @@ public class ContractsController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    [HttpPost("{idContract}/payments")]
+    public async Task<IActionResult> MakePayment([FromRoute] int idContract, double amount, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var newPayment = await _paymentsService.MakePayment(idContract, amount, cancellationToken);
+            return StatusCode((int)HttpStatusCode.Created, newPayment);
+        }
+        catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
 }

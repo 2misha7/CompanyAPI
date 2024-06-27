@@ -38,7 +38,7 @@ public class MyContext : DbContext
         modelBuilder.ApplyConfiguration(new VersionConfig());
 
         modelBuilder.Entity<Contract>()
-            .Property(x => x.Signed).IsConcurrencyToken();
+            .Property(x => x.Status).IsConcurrencyToken();
         modelBuilder.Entity<Contract>()
             .Property(x => x.AmountPaid).IsConcurrencyToken();
 

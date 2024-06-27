@@ -10,4 +10,5 @@ public interface IContractsRepository
     Task<bool> CompanyHasContracts(int clientId);
     Task<Contract> AddContractAsync(Contract newContract, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
+    Task<Contract?> GetContract(int idContract, CancellationToken cancellationToken);
 }

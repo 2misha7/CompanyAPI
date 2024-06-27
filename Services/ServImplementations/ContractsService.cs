@@ -66,7 +66,7 @@ public class ContractsService : IContractsService
             DateFrom = DateTime.Now,
             DateTo = DateTime.Now.AddDays(createContractDto.TimeRange),
             FullPrice = price,
-            Signed = false,
+            Status = ContractStatuses.Created,
             Payments = new List<Payment>()
         };
         
@@ -95,7 +95,7 @@ public class ContractsService : IContractsService
             SoftwareName = softwareName,
             FullPrice = contract.FullPrice,
             AmountPaid = contract.AmountPaid,
-            Signed = contract.Signed,
+            Status = contract.Status,
             ExtendedSupportPeriod = contract.ExtendedSupportPeriod
         };
         return finalContract;

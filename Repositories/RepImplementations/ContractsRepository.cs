@@ -48,4 +48,9 @@ public class ContractsRepository : IContractsRepository
     {
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<Contract?> GetContract(int idContract, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Contracts.FirstOrDefaultAsync(x => x.IdContract == idContract, cancellationToken: cancellationToken);
+    }
 }
