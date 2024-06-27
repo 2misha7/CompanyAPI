@@ -1,7 +1,12 @@
 ﻿using ApbdProject.Context;
+using ApbdProject.Exceptions;
+using ApbdProject.Migrations;
 using ApbdProject.Repositories.RepInterfaces;
+using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Project.Entities;
+using Version = Project.Entities.Version;
 
 namespace ApbdProject.Repositories.RepImplementations;
 
@@ -52,5 +57,47 @@ public class ContractsRepository : IContractsRepository
     public async Task<Contract?> GetContract(int idContract, CancellationToken cancellationToken)
     {
         return await _dbContext.Contracts.FirstOrDefaultAsync(x => x.IdContract == idContract, cancellationToken: cancellationToken);
+    }
+
+    public async Task<IEnumerable<Contract>> GetAllSignedContracts(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Contracts
+            .Where(contract => contract.Status == "Signed")
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Contract>> GetAllSignedCreatedContracts(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Contracts
+            .Where(contract => contract.Status == "Signed" || contract.Status == "Created" )
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Contract>> GetAllSignedContractsBySoftware(int idProduct, CancellationToken cancellationToken)
+    {
+        var signedContracts = await _dbContext.Contracts
+            .Where(contract => contract.Status == "Signed" && 
+                               _dbContext.Versions.Any(version => version.IdSoftware == idProduct && version.IdVersion == contract.IdSoftwareVersion))
+            .ToListAsync(cancellationToken);
+
+        if (!signedContracts.Any())
+        {
+            throw new ValidationException("There are no signed contracts available for this software.");
+        }
+        return signedContracts;
+    }
+
+    public async Task<IEnumerable<Contract>> GetAllSignedCreatedContractsBySoftware(int idProduct, CancellationToken cancellationToken)
+    {
+        var signedContracts = await _dbContext.Contracts
+            .Where(contract => (contract.Status == "Signed" || contract.Status == "Created") && 
+                               _dbContext.Versions.Any(version => version.IdSoftware == idProduct && version.IdVersion == contract.IdSoftwareVersion))
+            .ToListAsync(cancellationToken);
+
+        if (!signedContracts.Any())
+        {
+            throw new ValidationException("There are no signed contracts available for this software.");
+        }
+        return signedContracts;
     }
 }

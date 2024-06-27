@@ -1,4 +1,5 @@
-﻿using Project.Entities;
+﻿using System.Collections;
+using Project.Entities;
 
 namespace ApbdProject.Repositories.RepInterfaces;
 
@@ -11,4 +12,9 @@ public interface IContractsRepository
     Task<Contract> AddContractAsync(Contract newContract, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task<Contract?> GetContract(int idContract, CancellationToken cancellationToken);
+    Task<IEnumerable<Contract>> GetAllSignedContracts(CancellationToken cancellationToken);
+    Task<IEnumerable<Contract>> GetAllSignedCreatedContracts(CancellationToken cancellationToken);
+    Task<IEnumerable<Contract>> GetAllSignedContractsBySoftware(int idProduct, CancellationToken cancellationToken);
+
+    Task<IEnumerable<Contract>> GetAllSignedCreatedContractsBySoftware(int idProduct, CancellationToken cancellationToken);
 }
