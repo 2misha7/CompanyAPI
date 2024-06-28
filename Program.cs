@@ -1,12 +1,12 @@
+using System.Text;
 using ApbdProject.Context;
-using ApbdProject.Controllers;
 using ApbdProject.Repositories.RepImplementations;
 using ApbdProject.Repositories.RepInterfaces;
 using ApbdProject.Services.ServImplementations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ApbdProject.Services.ServInterfaces;
 using Microsoft.EntityFrameworkCore;
-using Project.Entities;
-
+using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -28,6 +28,50 @@ builder.Services.AddDbContext<MyContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
 
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(opt =>
+    {
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(2),
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+        };
+        opt.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                {
+                    context.Response.Headers.Append("Token-expired", "true");
+                }
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddJwtBearer("IgnoreTokenExpirationScheme", opt =>
+    {
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ClockSkew = TimeSpan.FromMinutes(2),
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+        };
+    });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -37,6 +81,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication(); 
+app.UseAuthorization(); 
 app.MapControllers();
 app.Run();
 

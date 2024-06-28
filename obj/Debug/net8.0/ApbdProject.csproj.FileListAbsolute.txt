@@ -166,3 +166,4 @@ C:\Users\Misha\Desktop\ApbdProject\ApbdProject\obj\Debug\net8.0\refint\ApbdProje
 C:\Users\Misha\Desktop\ApbdProject\ApbdProject\obj\Debug\net8.0\ApbdProject.pdb
 C:\Users\Misha\Desktop\ApbdProject\ApbdProject\obj\Debug\net8.0\ApbdProject.genruntimeconfig.cache
 C:\Users\Misha\Desktop\ApbdProject\ApbdProject\obj\Debug\net8.0\ref\ApbdProject.dll
+C:\Users\Misha\Desktop\ApbdProject\ApbdProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

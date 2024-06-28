@@ -2,6 +2,7 @@
 using System.Net;
 using ApbdProject.DTO.Requests;
 using ApbdProject.Services.ServInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApbdProject.Controllers;
@@ -19,7 +20,7 @@ public class ClientsController : ControllerBase
     }
     
     
-    
+    [Authorize]
     //add new Individual Client to DB
     [HttpPost("/individuals")]
     public async Task<IActionResult> AddIndividual([FromBody] AddIndividualDto individualDto, CancellationToken cancellationToken)
@@ -35,7 +36,7 @@ public class ClientsController : ControllerBase
         }
     }
     
-    
+    [Authorize]
     //add new Company Client to DB
     [HttpPost("/companies")]
     public async Task<IActionResult> AddCompany([FromBody] AddCompanyDto companyDto, CancellationToken cancellationToken)
@@ -53,6 +54,7 @@ public class ClientsController : ControllerBase
     
     
     //soft-delete an Individual client
+    [Authorize(Roles = "admin")]
     [HttpDelete("/individuals/{idClient}")]
     public async Task<IActionResult> DeleteIndividualClient(int idClient, CancellationToken cancellationToken)
     {
@@ -68,6 +70,7 @@ public class ClientsController : ControllerBase
     }
 
     //update Individual client
+    [Authorize(Roles = "admin")]
     [HttpPut("/individuals/{idClient}")]
     public async Task<IActionResult> UpdateIndividual(int idClient, [FromBody] UpdateIndividualDto individualDto ,CancellationToken cancellationToken)
     {
@@ -83,6 +86,7 @@ public class ClientsController : ControllerBase
     }
     
     //update Individual client
+    [Authorize(Roles = "admin")]
     [HttpPut("/companies/{idClient}")]
     public async Task<IActionResult> UpdateCompany(int idClient, [FromBody] UpdateCompanyDto companyDto ,CancellationToken cancellationToken)
     {

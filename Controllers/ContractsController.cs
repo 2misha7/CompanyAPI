@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using ApbdProject.DTO.Requests;
 using ApbdProject.Services.ServInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApbdProject.Controllers;
@@ -18,9 +19,10 @@ public class ContractsController : ControllerBase
         _contractsService = contractsService;
         _paymentsService = paymentsService;
     }
-
     
-   [HttpPost()]
+    
+    [Authorize] 
+    [HttpPost()]
     public async Task<IActionResult> CreateContract([FromBody] CreateContractDto createContractDto, CancellationToken cancellationToken)
     {
         try
@@ -34,6 +36,7 @@ public class ContractsController : ControllerBase
         }
     }
     
+    [Authorize]
     [HttpPost("{idContract}/payments")]
     public async Task<IActionResult> MakePayment([FromRoute] int idContract, double amount, CancellationToken cancellationToken)
     {

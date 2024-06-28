@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GakkoHorizontalSlice.Model;
+using Microsoft.EntityFrameworkCore;
 using Project.Configs;
 using Project.Entities;
 using Version = Project.Entities.Version;
@@ -23,6 +24,7 @@ public class MyContext : DbContext
     public DbSet<Software> Softwares { get; set; }
     public DbSet<SoftwareCategory> SoftwareCategories { get; set; }
     public DbSet<Version> Versions { get; set; }
+    public DbSet<AppUser> Users { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

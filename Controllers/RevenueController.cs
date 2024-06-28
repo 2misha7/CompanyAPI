@@ -1,4 +1,5 @@
 ﻿using ApbdProject.Services.ServInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
 
@@ -16,6 +17,7 @@ public class RevenueController : ControllerBase
         _revenueService = revenueService;
     }
 
+    [Authorize]
     [HttpGet("current")]
     public async Task<IActionResult> GetCurrentCompanyRevenue(string? currencyCode, CancellationToken cancellationToken)
     {
@@ -34,6 +36,7 @@ public class RevenueController : ControllerBase
         }
     }
     
+    [Authorize]
     [HttpGet("predicted")]
     public async Task<IActionResult> GetPredictedCompanyRevenue(string? currencyCode, CancellationToken cancellationToken)
     {
@@ -53,7 +56,7 @@ public class RevenueController : ControllerBase
     }
     
     
-    
+    [Authorize]
     [HttpGet("current/product/{idProduct}")]
     public async Task<IActionResult> GetCurrentProductRevenue(string? currencyCode, [FromRoute]int idProduct, CancellationToken cancellationToken)
     {
@@ -73,6 +76,7 @@ public class RevenueController : ControllerBase
         }
     }
     
+    [Authorize]
     [HttpGet("predicted/product/{idProduct}")]
     public async Task<IActionResult> GetPredictedProductRevenue(string? currencyCode, [FromRoute]int idProduct, CancellationToken cancellationToken)
     {
